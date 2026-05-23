@@ -85,7 +85,7 @@ def generate_track1_test_splits(language_pair):
 # print(ende_random[0])
 
  # Change this to the exact Gemma variant you want, e.g. "google/gemma-2-4b-it" or a local path.
-model_id = "Qwen/Qwen2.5-3B-Instruct"  # example; replace with e.g. "gemma-3-4b-it" 
+model_id = "CohereLabs/tiny-aya-global"  # example; replace with e.g. "gemma-3-4b-it" 
 
 src_tgt = {
     "ende": {
@@ -137,9 +137,6 @@ def generate_translations(inputs, model_id, src_tgt_pair, batch_size=16):
     """
     
     tokenizer = AutoTokenizer.from_pretrained(model_id)
-    if tokenizer.pad_token is None:
-        tokenizer.pad_token = tokenizer.eos_token
-    tokenizer.padding_side = "left"
     model = AutoModelForCausalLM.from_pretrained(
         model_id,
         torch_dtype=torch.bfloat16,
@@ -263,7 +260,6 @@ def generate_codeswitched_translations(inputs, model_id, src_target_pair, batch_
         generated_ids = model.generate(
             **model_inputs,
             max_new_tokens=512, 
-            do_sample=True,
             temperature=0.3,
             top_p=0.9
         )
@@ -503,7 +499,7 @@ def generate_and_save_full_benchmark(model_id, strategy="baseline", local=True):
 if __name__ == "__main__":
     os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
     # Change this to the exact Gemma variant you want, e.g. "google/gemma-2-4b-it" or a local path.
-    model_id = "Qwen/Qwen2.5-3B-Instruct"  # example; replace with e.g. "gemma-3-4b-it" 
+    model_id = "CohereLabs/tiny-aya-global"  # example; replace with e.g. "gemma-3-4b-it" 
 
     print(f"Initial VRAM Allocated: {torch.cuda.memory_allocated() / 1e6} MB")
     # test_slice = src_tgt["ende"]["proper"][:3]
